@@ -1,7 +1,9 @@
 from ply.lex import lex
 from ply.yacc import yacc
 
+############################################
 # Tokenizer
+############################################
 
 reserved = {
     'print': 'PRINT'
@@ -53,40 +55,25 @@ def t_error(t):
 
 # Build the lexer object
 lexer = lex()
-    
+
+
+############################################
 # Parser
-
-# Test it out
-data = '''
-3 + 4 - 3
-a = 3
-B = "Hello " . "World"
-print B
-print "Hello World" * 3
-'''
-
-# Give the lexer some input
-lexer.input(data)
-
-# Tokenize
-# for tok in lexer:
-#     print(tok)
-
-
-# --- Parser
+############################################
     
 # Define the grammar
 def p_expression(p):
     """
     expression  : expression PLUS expression
+                | expression REPETITION expression
                 | expression MINUS expression
-                | STRING CONCATENATION STRING
-                | ID EQUAL expression
-                | ID REPETITION NUMBER
-                | ID REPETITION ID
-                | NUMBER REPETITION ID
-                | NUMBER REPETITION STRING
-                | STRING REPETITION NUMBER
+                | expression CONCATENATION expression
+    """
+    p[0] = (p[2], p[1], p[3])
+
+def p_expression_equal(p):
+    """
+    expression  : ID EQUAL expression
     """
     p[0] = (p[2], p[1], p[3])
 
@@ -106,8 +93,8 @@ def p_variable(p):
 def p_term(p):
     """
     term        : NUMBER
-                | ID
                 | STRING
+                | ID
     """
     p[0] = p[1]
 
@@ -120,15 +107,9 @@ def p_print(p):
 def p_error(p):
     print(f'Syntax error at {p.value!r}')
 
-# Build the parser
+
 parser = yacc()
 
-# Parse an expression
-# ast = parser.parse('3 + 4 - 3')
-# print(ast)
-
-# ast = parser.parse('"Hello " . "World"')
-# print(ast)
 variables = {}
 
 def run(p):
@@ -156,11 +137,26 @@ def run(p):
         return p
     
 while True:
+    print("#"*50)
     try:
-        s = input('calc > ')
+        s = input('interpreter $> ')
     except EOFError:
         break
-    result = parser.parse(s)
-    print(run(result))
 
+    tree = parser.parse(s)
+    print(run(tree))
+
+    # Print tokens
+    print("\n"*2 + "tokens:")
+    lexer.input(s)
+
+    while True:
+
+        tok = lexer.token()
+        if not tok:
+            break
+        print(tok)
+    
+    # Print tree
+    print('\n'*2 + "tree: %s" % str(tree))
 
