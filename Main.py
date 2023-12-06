@@ -10,11 +10,18 @@ class CodeLine(BaseModel):
 
 @app.post("/")
 async def root(codeline: CodeLine):
-    return {
-        "output": execute_line(codeline.line),
-        "tokens": get_tokens(codeline.line),
-        "tree": get_tree(codeline.line)
-    }
+    try:
+        return {
+            "output": execute_line(codeline.line),
+            "tokens": get_tokens(codeline.line),
+            "tree": get_tree(codeline.line)
+        }
+    except Exception as e:
+        return {
+            "output": "Illegal syntax",
+            "tokens": [],
+            "tree": []
+        }
 
 @app.get("/variables")
 def memory():
