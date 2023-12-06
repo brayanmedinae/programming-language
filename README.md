@@ -17,7 +17,7 @@ pip install "uvicorn[standard]"
 3. Ejecutar el main
 
 ```
-uvicorn main:app --reload
+uvicorn Main:app --reload
 ```
 Por defecto la url será http://127.0.0.1:8000/
 
