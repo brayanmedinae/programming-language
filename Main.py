@@ -43,7 +43,7 @@ async def root(codeline: CodeLine):
             "tokens": get_tokens(codeline.line),
             "tree": get_tree(codeline.line),
         }
-    except Exception as e:
+    except Exception:
         return {
             "output": "Illegal syntax",
             "isSuccess": False,
