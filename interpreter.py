@@ -18,7 +18,8 @@ tokens = [
     'EQUAL',
     'CONCATENATION',
     'REPETITION',
-    'STRING'
+    'STRING',
+    'END_OF_LINE'
 ]
 
 tokens += reserved.values()
@@ -44,6 +45,7 @@ t_MINUS = r'-'
 t_EQUAL = r'='
 t_CONCATENATION = r'\.'
 t_REPETITION = r'\*'
+t_END_OF_LINE = r'\$'
 
 # Ignored characters
 t_ignore = ' \t|\n'
@@ -62,6 +64,20 @@ lexer = lex()
 ############################################
     
 # Define the grammar
+
+def p_program(p):
+    """
+    program     : statement
+                | program statement
+    """
+    p[0] = p[1]
+
+def p_statement(p):
+    """
+    statement   : expression END_OF_LINE
+    """
+    p[0] = p[1]
+
 def p_expression(p):
     """
     expression  : expression PLUS expression
