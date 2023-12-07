@@ -12,9 +12,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-app = FastAPI()
-
 class CodeLine(BaseModel):
     line: str
 
