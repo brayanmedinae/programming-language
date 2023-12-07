@@ -24,13 +24,15 @@ async def root(codeline: CodeLine):
         return {
             "output": execute_line(codeline.line),
             "tokens": get_tokens(codeline.line),
-            "tree": get_tree(codeline.line)
+            "tree": get_tree(codeline.line),
+            "isSuccess": True
         }
     except Exception as e:
         return {
             "output": "Illegal syntax",
             "tokens": [],
-            "tree": []
+            "tree": [],
+            "isSuccess": False
         }
 
 @app.get("/variables")
