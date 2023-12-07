@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from interpreter import execute_line, get_variables, get_tokens, get_tree
 from fastapi.middleware.cors import CORSMiddleware
+import asyncio
+
+counter_lock = asyncio.Lock()
+counter = 0
 
 app = FastAPI()
 
@@ -17,19 +21,25 @@ class CodeLine(BaseModel):
 
 @app.post("/")
 async def root(codeline: CodeLine):
+    global counter
+
+    async with counter_lock:
+        counter += 1
     try:
         return {
             "output": execute_line(codeline.line),
+            "isSuccess": True,
+            "line": counter,
             "tokens": get_tokens(codeline.line),
             "tree": get_tree(codeline.line),
-            "isSuccess": True
         }
     except Exception as e:
         return {
             "output": "Illegal syntax",
+            "isSuccess": False,
+            "line": counter,
             "tokens": [],
             "tree": [],
-            "isSuccess": False
         }
 
 @app.get("/variables")
