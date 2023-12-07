@@ -25,6 +25,16 @@ async def root(codeline: CodeLine):
 
     async with counter_lock:
         counter += 1
+    
+    if codeline.line == "":
+        return {
+            "output": "",
+            "isSuccess": True,
+            "line": counter,
+            "tokens": [],
+            "tree": [],
+        }
+    
     try:
         return {
             "output": execute_line(codeline.line),
