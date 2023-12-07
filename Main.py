@@ -55,3 +55,17 @@ async def root(codeline: CodeLine):
 @app.get("/variables")
 def memory():
     return get_variables()
+
+@app.get("/reset")
+def reset():
+    global counter
+    global variables
+    counter = 0
+    variables = {}
+    return {
+        "output": "Reset successful",
+        "isSuccess": True,
+        "line": counter,
+        "tokens": [],
+        "tree": [],
+    }
