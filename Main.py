@@ -28,7 +28,7 @@ async def root(codeline: CodeLine):
     
     if codeline.line == "":
         return {
-            "output": "",
+            "output": None,
             "isSuccess": True,
             "line": counter,
             "tokens": [],
